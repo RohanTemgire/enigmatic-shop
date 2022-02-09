@@ -1,4 +1,6 @@
-class Product {
+import 'package:flutter/foundation.dart';
+
+class Product with ChangeNotifier {
   final String id;
   final String title;
   final String description;
@@ -14,4 +16,11 @@ class Product {
     this.isFavorite = false,
     required this.price,
   });
+
+  void toggelFavorite(bool fav) {
+    if (fav == false) {
+      this.isFavorite = true;
+    }
+    return;
+  }
 }

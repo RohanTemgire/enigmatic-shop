@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/product.dart';
 import '../screens/product_detail_screen.dart';
 
 class ProductItems extends StatelessWidget {
   // const ProductItems({ Key? key }) : super(key: key);
 
-  final String id;
-  final String imageUrl;
-  final String title;
-  final double price;
+  // final String id;
+  // final String imageUrl;
+  // final String title;
+  // final double price;
 
-  const ProductItems(this.id, this.imageUrl, this.title, this.price);
+  // const ProductItems(this.id, this.imageUrl, this.title, this.price);
 
   @override
   Widget build(BuildContext context) {
+    final productData = Provider.of<Product>(context);
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: GridTile(
@@ -21,29 +24,32 @@ class ProductItems extends StatelessWidget {
           onTap: () {
             // Navigator.of(context).push(MaterialPageRoute(
             //     builder: (ctx) => ProductDetailScreen(title))); //this is on the fly, but it can be better for small apps
-            Navigator.of(context).pushNamed(ProductDetailScreen.routeName,arguments: id);
+            Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
+                arguments: productData.id);
           },
           child: Image.network(
-            imageUrl,
+            productData.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
         header: GridTileBar(
           backgroundColor: Colors.black54,
           title: Text(
-            title,
+            productData.title,
             textAlign: TextAlign.center,
           ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
           leading: IconButton(
-            icon: const Icon(Icons.favorite_border_rounded),
+            icon: productData.isFavorite
+                ? const Icon(Icons.favorite_rounded)
+                : const Icon(Icons.favorite_border_rounded),
             color: Theme.of(context).accentColor,
             onPressed: () {},
           ),
           title: Text(
-            '\$${price}',
+            '\$${productData.price}',
             textAlign: TextAlign.center,
           ),
           trailing: IconButton(
