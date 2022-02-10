@@ -17,10 +17,8 @@ class Product with ChangeNotifier {
     required this.price,
   });
 
-  void toggelFavorite(bool fav) {
-    if (fav == false) {
-      this.isFavorite = true;
-    }
-    return;
+  void toggelFavorite() {
+    isFavorite = !isFavorite;
+    notifyListeners();
   }
 }

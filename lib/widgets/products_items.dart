@@ -16,7 +16,7 @@ class ProductItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productData = Provider.of<Product>(context);
+    final productData = Provider.of<Product>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: GridTile(
@@ -41,12 +41,20 @@ class ProductItems extends StatelessWidget {
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
-          leading: IconButton(
-            icon: productData.isFavorite
-                ? const Icon(Icons.favorite_rounded)
-                : const Icon(Icons.favorite_border_rounded),
-            color: Theme.of(context).accentColor,
-            onPressed: () {},
+          leading: Consumer<Product>(
+            builder: (_, value, child) => IconButton(
+              icon: productData.isFavorite
+                  ? const Icon(Icons.favorite_rounded)
+                  : const Icon(Icons.favorite_border_rounded),
+              color: Theme.of(context).accentColor,
+              // title: child, //you can use the child here and it will not be rebuilt
+              onPressed: () {
+                productData.toggelFavorite();
+              },
+            ),
+            child: const Text('this does not rebuilt'),
+            //here this will not rebuild since
+            //the builder method does not rebuild it's child argument
           ),
           title: Text(
             '\$${productData.price}',
