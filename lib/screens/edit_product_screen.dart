@@ -26,7 +26,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   //your code. mostly we use it with forms.
 
   var _editedProducts =
-      Product(id: '', title: '', price: 0, imageUrl: '', description: '');
+      Product(id: ' ', title: '', price: 0, imageUrl: '', description: '');
 
   var _initValues = {
     'title': '',
@@ -49,7 +49,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // because we cant use modal route in the initState, therefor using it in didChangeDependencies
     // didChangeDependencies runs multiple times, we want it to run only one time, therefore using _isInit
     if (_isInit) {
-      final productId = ModalRoute.of(context)!.settings.arguments as String;
+      // print(_editedProducts.id);
+      var productId = ModalRoute.of(context)!.settings.arguments as String;
       if (productId != '') {
         _editedProducts =
             Provider.of<Products>(context, listen: false).findById(productId);
@@ -57,8 +58,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
           'title': _editedProducts.title,
           'description': _editedProducts.description,
           'price': _editedProducts.price.toString(),
-          'imageUrl': _editedProducts.imageUrl,
+          'imageUrl': '',
         };
+        _imageUrlController.text = _editedProducts.imageUrl;
       }
     }
     _isInit = false;
@@ -67,10 +69,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   @override
   void dispose() {
+    super.dispose();
     _imageUrlFocusNode.removeListener(_updateImageUrl);
     _imageUrlController.dispose();
     _imageUrlFocusNode.dispose();
-    super.dispose();
   }
 
   void _updateImageUrl() {
