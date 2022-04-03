@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import './product.dart';
 
@@ -50,18 +53,36 @@ class Products with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  void addProduct(Product product) {
-    final newProduct = Product(
-      id: DateTime.now().toString(),
-      title: product.title,
-      description: product.description,
-      imageUrl: product.imageUrl,
-      price: product.price,
-    );
+  Future<void> addProduct(Product product) async {
+    final url = Uri.parse('https://enigmatic-shop-default-rtdb.firebaseio.com' +
+        '/products.json');
+    return http
+        .post(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'imageurl': product.imageUrl,
+        'price': product.price,
+        'isFavorite': product.isFavorite,
+      }),
+    )
+        .then((response) {
+      final newProduct = Product(
+        id: json.decode(response.body)['name'],
+        title: product.title,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        price: product.price,
+      );
 
-    _items.add(newProduct);
-    // _items.insert(0,newProduct); // to add at the start of the list
-    notifyListeners();
+      _items.add(newProduct);
+      // _items.insert(0,newProduct); // to add at the start of the list
+      notifyListeners();
+    }).catchError((err){
+      print(err);
+      throw err;
+    });
   }
 
   void updateProduct(String id, Product newProduct) {
@@ -74,7 +95,7 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id){
+  void deleteProduct(String id) {
     _items.removeWhere((element) => element.id == id);
     notifyListeners();
   }

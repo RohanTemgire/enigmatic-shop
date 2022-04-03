@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import './screens/cart_screen.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<Orders>(create: (ctx) => Orders())
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Enigmatic Shop',
         theme: ThemeData(
           primarySwatch: Colors.indigo,

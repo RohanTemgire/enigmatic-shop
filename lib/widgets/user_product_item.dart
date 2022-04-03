@@ -9,6 +9,8 @@ class UserProductItem extends StatelessWidget {
   final String title;
   final String id;
   final String imgUrl;
+  final bool shouldChange = true;
+
 
   UserProductItem(this.id, this.title, this.imgUrl);
 
