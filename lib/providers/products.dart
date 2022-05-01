@@ -79,7 +79,7 @@ class Products with ChangeNotifier {
       _items.add(newProduct);
       // _items.insert(0,newProduct); // to add at the start of the list
       notifyListeners();
-    }).catchError((err){
+    }).catchError((err) {
       print(err);
       throw err;
     });
