@@ -16,6 +16,7 @@ class UserProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold =  Scaffold.of(context);
     return Card(
       elevation: 5,
       child: ListTile(
@@ -41,9 +42,15 @@ class UserProductItem extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
               IconButton(
-                onPressed: () {
-                  Provider.of<Products>(context, listen: false)
+                onPressed: () async {
+                  try{
+                  await Provider.of<Products>(context, listen: false)
                       .deleteProduct(id);
+
+                  }catch(err){
+                    //since this is a future and it cannot build a context yet so have to use a variable to store the context
+                    scaffold.showSnackBar(const SnackBar(content:  Text('Deleting failed! :(',textAlign: TextAlign.center,)));
+                  }
                 },
                 icon: const Icon(Icons.delete),
                 color: Theme.of(context).errorColor,

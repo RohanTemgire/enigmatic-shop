@@ -1,8 +1,9 @@
 import 'dart:convert';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/http_exception.dart';
 import './product.dart';
 
 class Products with ChangeNotifier {
@@ -90,44 +91,76 @@ class Products with ChangeNotifier {
     // });
   }
 
-  Future<void> fetchProducts() async {
+  // static List<Product> parseProducts(String responsebody){
+  //   var list = json.decode(responsebody) as List<dynamic>;
+  //   List<Product> products = list.map((e) => null)
+  // }
+
+  Future<void> getProducts() async {
     final url = Uri.parse(
         'https://enigmaticshop-691ff-default-rtdb.firebaseio.com' +
             '/products.json');
     try {
-      final response = await http.get(url);
-      final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      final List<Product> loadedProducts = [];
-      extractedData.forEach((prodId, prodData) {
-        loadedProducts.add(
-          Product(
-              id: prodId,
-              title: prodData['title'],
-              description: prodData['description'],
-              imageUrl: prodData['imageUrl'],
-              price: prodData['price'],
-              isFavorite: prodData['isfavorite']),
-        );
+      final data = await http.get(url);
+      var jsonData = json.decode(data.body) as Map<String, dynamic>;
+      final List<Product> products = [];
+      jsonData.forEach((prodId, prodData) {
+        products.add(Product(
+            id: prodId,
+            title: prodData['title'],
+            description: prodData['description'],
+            imageUrl: prodData['imageurl'],
+            isFavorite: prodData['isFavorite'],
+            price: prodData['price']));
       });
-      _items = loadedProducts;
+
+      // print(products.length);
+      _items = products.toList();
       notifyListeners();
     } catch (err) {
       print(err);
     }
   }
 
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((element) => element.id == id);
     if (prodIndex >= 0) {
-      _items[prodIndex] = newProduct;
-      notifyListeners();
+      final url = Uri.parse(
+          'https://enigmaticshop-691ff-default-rtdb.firebaseio.com' +
+              '/products.json/$id');
+      try {
+        await http.patch(url,
+            body: json.encode({
+              'title': newProduct.title,
+              'description': newProduct.description,
+              'imageurl': newProduct.imageUrl,
+              'price': newProduct.price.toDouble(),
+            }));
+        _items[prodIndex] = newProduct;
+        notifyListeners();
+      } catch (err) {
+        print(err);
+      }
     } else {
-      print('....');
+      print('item not updated!');
     }
   }
 
-  void deleteProduct(String id) {
-    _items.removeWhere((element) => element.id == id);
+  Future<void> deleteProduct(String id) async {
+    final url = Uri.parse(
+        'https://enigmaticshop-691ff-default-rtdb.firebaseio.com' +
+            '/products.json/$id');
+    var existingProductIndex = _items.indexWhere((element) => element.id == id);
+    var existingProduct = _items[existingProductIndex];
+
+    // _items.removeWhere((element) => element.id == id);
+    _items.removeAt(existingProductIndex);
     notifyListeners();
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+      throw HttpException('Could not delete the product.');
+    }
   }
 }
