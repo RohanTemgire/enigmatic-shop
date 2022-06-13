@@ -55,7 +55,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final url = Uri.parse(
-        'https://enigmaticshop-691ff-default-rtdb.firebaseio.com' +
+        'https://enigmaticshop-81a56-default-rtdb.firebaseio.com' +
             '/products.json');
     try {
       final response = await http.post(
@@ -92,7 +92,7 @@ class Products with ChangeNotifier {
 
   Future<void> fetchProducts() async {
     final url = Uri.parse(
-        'https://enigmaticshop-691ff-default-rtdb.firebaseio.com' +
+        'https://enigmaticshop-81a56-default-rtdb.firebaseio.com' +
             '/products.json');
     try {
       final response = await http.get(url);
