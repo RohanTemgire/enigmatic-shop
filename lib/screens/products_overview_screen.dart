@@ -25,6 +25,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
   var _isinit = true;
   var _isLoading = false;
+  // var _productsLoadedCompletely =false;
 
   @override
   void initState() {
@@ -41,7 +42,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Products>(context).fetchProducts().then((_) {
+      Provider.of<Products>(context).getProducts().then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -50,6 +51,12 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     _isinit = false;
     super.didChangeDependencies();
   }
+  // Future<void> _allProductsLoaded(showOnlyFavorites) async{
+  //   var products = await Provider.of<Products>(context).fetchProducts();
+  //   productsGrid(showOnlyFavorites);
+  // }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +99,10 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       ),
       drawer: AppDrawer(),
       body: _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
-          : productsGrid(_showOnlyFavorites),
+          :  productsGrid(_showOnlyFavorites),
     );
   }
 }
