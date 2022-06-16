@@ -33,8 +33,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Enigmatic Shop',
         theme: ThemeData(
-          primarySwatch: Colors.indigo,
-          accentColor: Colors.orange,
+          primarySwatch: Colors.teal,
+          accentColor: Colors.amber,
           fontFamily: 'Lato',
         ),
         // home: MyHomePage(),
